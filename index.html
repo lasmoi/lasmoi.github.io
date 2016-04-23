@@ -1,0 +1,306 @@
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<title>abc</title> 
+<link rel="icon" href="http://static.planetminecraft.com/files/resource_media/screenshot/1347/maxresdefault_6701266_lrg.jpg">
+<style>
+table, th, td {
+    border: 0px solid black;
+	border-collapse: collapse;
+}
+td {
+	height: 30px;
+	width: 30px
+}
+#canvas{
+	position: absolute;
+    left: 280px;
+    top: 25px;
+}
+#setup{
+	position: absolute;
+	top: 200px;
+}
+
+#panel td{
+	height: 45px;
+	width: 45px;
+}
+#stat{
+	position: absolute;
+	top: 300px;
+	left: 10px;
+}
+#stat b{
+	font-size: 30px;
+}
+#left{
+	position: absolute;
+	font-size: 100px;
+	top: 330px;
+	left: 20px;
+}
+#dash{
+	position: absolute;
+	top: 10px;
+	left: 160px;
+}
+#score{
+	position: absolute;
+	top: 460px;
+	left: 10px;
+}
+</style>
+
+</head> 
+<body>
+
+<div id='control'>
+<table id='panel'>
+<tr><td bgcolor='#ff4c4c'></td><td bgcolor='#ffaacb'></td><td bgcolor='#66cccc'></td></tr>
+<tr>
+<td><button id='f0' class='flood'>flood!</button></td>
+<td><button id='f1' class='flood'>flood!</button></td>
+<td><button id='f2' class='flood'>flood!</button></td></tr>
+<tr><td bgcolor='#96b788'></td><td bgcolor='yellow'></td><td bgcolor='#ceeae5'></td></tr>
+<tr>
+<td><button id='f3' class='flood'>flood!</button></td>
+<td><button id='f4' class='flood'>flood!</button></td>
+<td><button id='f5' class='flood'>flood!</button></td></tr>
+</table>
+</div>
+
+<div id='setup'>
+<input type='inputbox' id='para1' size=5><br>
+<input type='button' id='init' value='set size!'><br><br>
+<input type='inputbox' id='para2' size=5><br>
+<input type='button' id='size' value='set step!'>
+</div>
+
+<div id='stat'>
+<b>steps left:</b></div>
+<div id='left'></div>
+
+<div id='dash'>
+
+</div>
+
+<div id='score'>
+Your Score:<br>
+</div>
+
+<div id='canvas'>
+<table id='board'>
+</table>
+</div>
+<script>
+var c0='#ff4c4c';
+var c1='#ffaacb';
+var c2='#66cccc';
+var c3='#96b788';
+var c4='yellow';
+var c5='#ceeae5';
+
+function board_init(m,step){
+	//var n=10;
+	if(started){
+		game++;
+		document.getElementById("score").innerHTML+=game+'.  Steps: ';
+		if(won){
+			var display = steps-count;
+			document.getElementById("score").innerHTML+=display+"/"+steps+"  Size: "+n+"<br>";
+		}else{
+			document.getElementById("score").innerHTML+="FAILED/"+steps+"  Size: "+n+"<br>";
+		}
+		
+	}
+	won=false;
+	started = false;
+	document.getElementById("board").innerHTML="";
+	var i;
+	for(i=0;i<m;i++){
+		var div = document.getElementById("board");
+		var adding = "<tr>";
+		var j;
+		for(j=0;j<m;j++){
+			var pos = i +"_" + j;
+			adding += "<td class='cell' id="+ pos + " bgcolor="+color()+"></td>";
+		}
+		adding += "</tr>"
+		div.innerHTML = div.innerHTML + adding;
+	}
+	document.getElementById("left").innerHTML=step;
+	count = step;
+	steps = step;
+	n=m
+	document.getElementById("dash").innerHTML = "YOUR CLICK:<br>";
+	document.getElementById("0_0").className="flooding";
+}
+
+function color(){
+	var ind= Math.floor((Math.random() * 600) + 1);
+	ind = ind%6;
+	if(ind==0){var c=c0}
+	if(ind==1){var c=c1}
+	if(ind==2){var c=c2}
+	if(ind==3){var c=c3}
+	if(ind==4){var c=c4}
+	if(ind==5){var c=c5}
+	return c;
+}
+
+
+function flood(elem,color){
+	var p=elem.id;
+	var pos=p.split('_');
+	var row=Number(pos[0]);
+	var col=Number(pos[1]);
+	//document.getElementById("dash").innerHTML += row+','+col+'<br>';
+	var self = elem.getAttribute("bgcolor");
+	if (self == color){
+		elem.className="flooding";
+		if(row+1<n){
+			var r=row+1;
+			var c=col;
+			position=r+'_'+c;
+			var next=document.getElementById(position);
+			if (next.className!="flooding") flood(next,color);
+		}
+		if(col+1<n){
+			var r=row;
+			var c=col+1;
+			position=r+'_'+c;
+			var next=document.getElementById(position);
+			if (next.className!="flooding") flood(next,color);
+		}
+		if(row-1>=0){
+			var r=row-1;
+			var c=col;
+			position=r+'_'+c;
+			var next=document.getElementById(position);
+			if (next.className!="flooding") flood(next,color);
+		}
+		if(col-1>=0){
+			var r=row;
+			var c=col-1;
+			position=r+'_'+c;
+			var next=document.getElementById(position);
+			if (next.className!="flooding") flood(next,color);
+		}
+	}else{
+		elem.className="edge";
+	}
+}
+
+function pour(color){
+	var tile=document.getElementsByClassName("flooding");
+	var edge=document.getElementsByClassName("edge");
+	//document.getElementById("dash").innerHTML=edge.length+'<br>';
+	//alert(tile.length);
+	var i;
+	for (i = 0; i < tile.length; i++){
+		//alert(tile[ind].getAttribute("bgcolor"));
+		//alert(color);
+		tile[i].setAttribute("bgcolor", color);
+	}
+	for (i = 0; i < edge.length; i++){
+		flood(edge[i],color);
+	}
+}
+
+function winning(){
+	if(won) return;
+	count--;
+	document.getElementById("left").innerHTML=count;
+	var edge=document.getElementsByClassName("edge");
+	if(edge.length==0) {
+		won=true;
+		if(confirm('Finished! Start a new game?')){
+			board_init(n,steps);
+			var topleft = document.getElementById("0_0");
+			var init_color = topleft.getAttribute("bgcolor");
+			flood(topleft,init_color);
+			return;
+		}
+	}
+	if(count==0&&!won){
+		if(confirm('You lost! Start a new game?')){
+			board_init(n,steps);
+			var topleft = document.getElementById("0_0");
+			var init_color = topleft.getAttribute("bgcolor");
+			flood(topleft,init_color);
+			return;
+		}
+	}
+	
+}
+
+var n=14;
+var steps = 25
+var count = steps;
+var game = 0;
+var won=false;
+var started = false;
+
+document.getElementById("init").onclick=function(){
+	if(document.getElementById("para1").value){
+		m=document.getElementById("para1").value;
+		board_init(m,steps);
+		var topleft = document.getElementById("0_0");
+		var init_color = topleft.getAttribute("bgcolor");
+		flood(topleft,init_color);
+	}
+}
+document.getElementById("size").onclick=function(){
+	if(document.getElementById("para2").value){
+		step=document.getElementById("para2").value;
+		board_init(n,step);
+		var topleft = document.getElementById("0_0");
+		var init_color = topleft.getAttribute("bgcolor");
+		flood(topleft,init_color);
+	}
+}
+window.onload = board_init(n,steps);
+
+var topleft = document.getElementById("0_0");
+var init_color = topleft.getAttribute("bgcolor");
+//alert(init_color);
+
+window.onload = flood(topleft,init_color);
+//var tile=document.getElementsByClassName("flooding");
+//alert(tile.length);
+
+document.getElementById("f0").onclick=function(){
+	document.getElementById("dash").innerHTML += 'c0<br>';
+	pour(c0);pour(c0);pour(c0);winning();started = true;
+
+};
+document.getElementById("f1").onclick=function(){
+	document.getElementById("dash").innerHTML += 'c1<br>';
+	pour(c1);pour(c1);pour(c1);winning();started = true;
+
+};
+document.getElementById("f2").onclick=function(){
+	document.getElementById("dash").innerHTML += 'c2<br>';
+	pour(c2);pour(c2);pour(c2);winning();started = true;
+
+};
+document.getElementById("f3").onclick=function(){
+	document.getElementById("dash").innerHTML += 'c3<br>';
+	pour(c3);pour(c3);pour(c3);winning();started = true;
+
+};
+document.getElementById("f4").onclick=function(){
+	document.getElementById("dash").innerHTML += 'c4<br>';
+	pour(c4);pour(c4);pour(c4);winning();started = true;
+
+};
+document.getElementById("f5").onclick=function(){
+	document.getElementById("dash").innerHTML += 'c5<br>';
+	pour(c5);pour(c5);pour(c5);winning();started = true;
+};
+
+
+
+</script>
+</body>
+</html>
