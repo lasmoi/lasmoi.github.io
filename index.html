@@ -1,5 +1,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml"> 
-<title>Hello!</title> 
+<head>
+	<script src="js/jquery-2.2.4.min.js"></script>
+
+	<script>
+$(document).ready(function(){
+	$("#php").on("click",function(){
+		window.location = "https://www.github.com/lasmoi";
+	});
+})
+	</script>
+
 <style>
 #jump{
 	color: black;
@@ -13,12 +23,21 @@
 	color: black;
 	text-decoration: none;
 }
+
+#tools:hover{
+	border:solid #ddd;
+}
+
 #php:hover{
 	color: green;
 	border: 1px solid;
 }
 </style>
+</head>
+<title>Hello!</title> 
+
 <h1> <a href="flood.html" id="jump"> Hello world </a> </h1><br>
-<h2> <a href="test.html" id="php"> Bye world </a> </h2>
+<h2> <span id="php"> Bye world </span> </h2>
+<h2> <a href="tools.html" id="tools"> Have some tools~</a> </h2>
 
 </html>
