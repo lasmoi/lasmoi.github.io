@@ -1,0 +1,66 @@
+<html> 
+<head>
+	<link rel="stylesheet" type="text/css" href="css/Collatz/Collatz.css">
+	<script src="js/jquery-2.2.4.min.js"></script>
+
+<script>
+
+$(document).ready(function(){
+
+	function pierce(a,b){
+		var d = new Date();
+		var l = d.getTime();
+		var count = 0;
+		$("#aNum").append(a);
+		$("#bNum").append(b);
+		while(b!=0){
+			count++;
+			$("#canvas").append(count+": b = "+b+";");
+			if(count == 5) $("#canvas").append("<br>");
+			b = a%b;
+			var d2 = new Date();
+			var n2 = d.getTime();
+			if(n2-l>10000){
+				console.log(d2);
+				break;
+			}
+		}
+		$("#count").append(count);
+	}
+
+	function validate(which){
+		var input = parseInt($("#"+which).val());
+		if(isNaN(input)){
+			alert("Please type in an Int!");
+			return;
+		}else{
+		}
+		$("#canvas").text("");
+		return input;
+	}
+
+	$("#pierce").on("click",function(){
+		$("span").text("");
+		pierce(validate("a"),validate("b"));
+	});
+
+
+});
+</script>
+
+</head>
+
+<body>
+	<div>
+Pierce it<br>
+a:<input id="a" value="1"/>b:<input id="b" value="1"/>      <button id="pierce">pierce</button> <br>
+<span id="aNum"></span> mod <span id="bNum"></span> called <span id="count"></span> times:
+</div>
+<p id="canvas">
+
+
+
+</p>
+
+</body>
+</html>
